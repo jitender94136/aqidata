@@ -1,0 +1,138 @@
+<html>
+
+<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+			<meta http-equiv="X-UA-Compatible" content="ie=edge">
+			<meta http-equiv="Content-Language" content="en" />
+			<meta name="msapplication-TileColor" content="#2d89ef">
+			<link href="/assets/css/dashboard.css" rel="stylesheet" />
+			<script type="text/javascript" src="/assets/js/vendors/jquery-3.2.1.min.js"  >  </script>
+			<link rel="stylesheet" type="text/css" href="/assets/plugins/DataTables/datatables.min.css"/>
+			<script type="text/javascript" src="/assets/plugins/DataTables/datatables.min.js"></script>
+			
+		    
+			
+</head>
+		<body>
+		
+					<table id="example"  class="display cell-border currentable"  style="text-align:center;">
+					
+							<thead>
+									<tr>
+												<td> <b>Parameter </b>  </td> 
+												<td> <b>Central Park </b> </td> 
+												<td> <b>Sohna Road</b> </td> 
+									</tr>
+							</thead>
+							<tbody>
+							
+							
+								<tr>
+											<td> PM2.5</td> 
+											<td>$!record.pm2 <span>&micro;g/m<sup>3</sup></span></td> 
+											<td> $!secondSensorRecord.pm2 <span>&micro;g/m<sup>3</sup></span>   </td> 
+								</tr>
+								<tr>
+											<td> PM10</td> 
+											<td> $!record.pm10 <span>&micro;g/m<sup>3</sup></span> </td> 
+											<td> $!secondSensorRecord.pm10  <span>&micro;g/m<sup>3</sup></span></td> 
+								</tr>
+								<tr>
+											<td> Temp.</td> 
+											<td>$!record.temp &deg;Celcius </td> 
+											<td> $!secondSensorRecord.temp  &deg;Celcius </td> 
+								</tr>
+								<tr>
+											<td> Humidity</td> 
+											<td> $!record.hum %</td> 
+											<td> $!secondSensorRecord.hum  %</td> 
+								</tr>
+								<tr>
+											<td> CO</td> 
+											<td>$!record.co <span>mg/m<sup>3</sup></span> </td> 
+											<td> $!secondSensorRecord.co <span>mg/m<sup>3</sup></span>  </td> 
+								</tr>
+								<tr>
+											<td> SO2</td> 
+											<td> $!record.so2 <span>&micro;g/m<sup>3</sup></span> </td> 
+											<td> $!secondSensorRecord.so2  <span>&micro;g/m<sup>3</sup></span></td> 
+								</tr>
+								<tr>
+											<td> NO2 </td> 
+											<td> $!record.no2 <span>&micro;g/m<sup>3</sup></span> </td> 
+											<td> $!secondSensorRecord.no2 <span>&micro;g/m<sup>3</sup></span></td> 
+								</tr>
+							</tbody>	
+					
+					</table>
+		
+					
+					
+					
+					<table border="1" width="100%"     bgcolor="#FFFFFF" bordercolor="#CDCDCD" class="currenttable">
+                    <tr>
+                    		<td colspan="10" height="55"> <strong><span> PM2.5 Data Sensor 1 (<span>&micro;g/m<sup>3</sup></span>)</strong> </td>
+                    </tr>
+                    <tr>
+			                    	#foreach($!s in $!firstSensorRecords)
+					                   <td ><strong><span> $!s.timestamp.split(" ")[1]  </span> </strong></td>
+					                #end   
+		                    
+                    </tr>
+                    <tr>
+		                    
+		                    		#foreach($!s in $!firstSensorRecords)
+		                    			<td > $!s.pm2   </td>
+		                    		#end 
+		                    
+		                    
+		            </tr>
+                    
+                    </table>
+					
+                    <table border="1" width="100%"     bgcolor="#FFFFFF" bordercolor="#CDCDCD" class="currenttable">
+		                    <tr>
+		                    <td colspan="10" height="55"> <strong><span> PM2.5 Data Sensor 2 (<span>&micro;g/m<sup>3</sup></span>) </strong> </td>
+		                    </tr>
+		                    <tr>
+				                    	#foreach($!s in $!secondSensorRecords)
+						                    <td ><strong><span> $!s.timestamp.split(" ")[1]  </span> </strong></td>
+						                #end   
+			                </tr>
+		                    <tr>
+				                    
+				                    		#foreach($!s in $!secondSensorRecords)
+				                    			<td > $!s.pm2   </td>
+				                    		#end 
+				                   
+				                    
+				            </tr>
+		                   
+                    </table>
+					
+					
+					<script type="text/javascript">
+									$(document).ready(function() {
+									    $('#example').DataTable({
+									    	
+									    	"bSort": false,
+									    	"bLengthChange": false,
+									    	"bFilter": false,
+									        "bInfo": false
+									    	
+									    });
+									    
+									    
+									    
+									    
+									    
+									});
+					
+					</script>
+					
+					
+		</body>
+
+
+</html>
