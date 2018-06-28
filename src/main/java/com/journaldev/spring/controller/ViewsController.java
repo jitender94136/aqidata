@@ -28,10 +28,8 @@ public class ViewsController {
 	@Autowired
 	RecordService recordService;
 
-	/**
-	 * Upload single file using Spring Controller
-	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	
+	@RequestMapping(value = "/aqi", method = RequestMethod.GET)
 	public ModelAndView index(HttpServletRequest request) {
 		ModelAndView mv = new ModelAndView();
 		Record record = recordService.getLatestRecord();

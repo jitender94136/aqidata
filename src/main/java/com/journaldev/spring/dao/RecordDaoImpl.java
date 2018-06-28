@@ -15,7 +15,7 @@ import com.journaldev.spring.modal.Record;
 @Repository
 public class RecordDaoImpl implements RecordDao {
 
-  private JdbcTemplate jdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 	
     @Autowired
     public void setDataSource(DataSource dataSource) {
