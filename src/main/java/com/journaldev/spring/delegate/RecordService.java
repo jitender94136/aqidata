@@ -16,5 +16,7 @@ public interface RecordService {
 				public Record getSecondSensorRecords();
 
 				public List<Record> getCurrentDaySecondSensorRecords();
+
+				public List<Record> getCentralParkFeed();
 	
 }

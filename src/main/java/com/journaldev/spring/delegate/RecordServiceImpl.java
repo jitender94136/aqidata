@@ -44,4 +44,10 @@ public class RecordServiceImpl implements RecordService {
 		return recordDao.getCurrentDaySecondSensorRecords();
 	}
 
+	@Override
+	public List<Record> getCentralParkFeed() {
+		// TODO Auto-generated method stub
+		return recordDao.getCentralParkFeed() ;
+	}
+
 }

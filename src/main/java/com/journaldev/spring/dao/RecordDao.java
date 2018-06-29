@@ -29,6 +29,8 @@ public interface RecordDao {
 	public Record getSecondSensorRecords();
 
 	public List<Record> getCurrentDaySecondSensorRecords();
+
+	public List<Record> getCentralParkFeed();
 	
 	
 	

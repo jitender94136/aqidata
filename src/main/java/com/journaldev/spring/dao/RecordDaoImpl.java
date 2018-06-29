@@ -1,5 +1,10 @@
 package com.journaldev.spring.dao;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -85,5 +90,42 @@ public class RecordDaoImpl implements RecordDao {
 		List<Record> records = jdbcTemplate.query(sql, new BeanPropertyRowMapper<Record>(Record.class));;
 		return records;
 	}
+
+
+	@Override
+	public List<Record> getCentralParkFeed() {
+		Connection con = null;
+		List<Record> records = new ArrayList<Record>();
+		try {
+			con = jdbcTemplate.getDataSource().getConnection();
+			String sql = "call fl_get_central_park_feed()";
+			CallableStatement cstmt = con.prepareCall(sql);
+			ResultSet rs = cstmt.executeQuery();
+			while(rs.next()) {
+						Record record = new Record();
+						record.setPm2(rs.getString("avgpm2"));
+						record.setTimestamp(rs.getString("timestamp"));
+						records.add(record);
+			}
+			
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			
+			if(con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return records;
+	}
+	
+	
+	
 	
 }

@@ -58,6 +58,11 @@ public class RecordController {
 		  return recordService.getCurrentDaySecondSensorRecords();
 	}
 	
+	@RequestMapping(value = "/getPM25TrendData", method = RequestMethod.GET)
+	public List<Record> getCentralParkFeed(HttpServletRequest request) {
+		  return recordService.getCentralParkFeed();
+	}
+	
 	
 	
 	
