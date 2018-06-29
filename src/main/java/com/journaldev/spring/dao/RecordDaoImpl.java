@@ -82,7 +82,7 @@ public class RecordDaoImpl implements RecordDao {
 
 	@Override
 	public List<Record> getCurrentDaySecondSensorRecords() {
-		String sql = "select * from record_2 where date(timestamp) = date(now()) order by id desc limit 10";
+		String sql = "select * from record_2 order by id desc limit 10";
 		List<Record> records = jdbcTemplate.query(sql, new BeanPropertyRowMapper<Record>(Record.class));;
 		return records;
 	}
