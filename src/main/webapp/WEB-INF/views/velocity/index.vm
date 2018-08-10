@@ -59,7 +59,8 @@
 	            var resp = xhr.responseText;
 	            var respJson = JSON.parse(resp);
 	            console.log(respJson);
-	            resolve(respJson,centralParkData);
+	            console.log('central park data',centralParkData);
+	            resolve([respJson,centralParkData]);
 	         } else {
 	            reject(xhr.status);
 	            console.log("xhr failed");
@@ -101,6 +102,7 @@
     			type : 'GET',
 				url : 'getPM25TrendData',
 				success : function(data) {
+    				console.log('the response from ajax request....');
     				console.log(data);
     				makeAjaxCall("https://api.openaq.org/v1/measurements?country=IN&city=Delhi&limit=50","GET",data).then(generatePM2Chart, errorHandler);
 				}
@@ -882,51 +884,71 @@
        
       
        
-        function generatePM2Chart(apiResponse,dataArr) {
+        function generatePM2Chart(responseArr) {
+        	 var apiResponse =  responseArr[0];
+        	 var dataArr = responseArr[1];
+        								console.log('the value of data arr ',dataArr);
 					    	   		  	var pm2valuesarr = [];
 					    	   		    pm2valuesarr.push('data1')
 					    	   		  	var timevaluesarr = [];
 					    	   		    timevaluesarr.push('x1');
 					    	   		  	for(var key in dataArr) {
-					    	   		  			if(key < 10) {
+					    	   		  			if(key < 11) {
+					    	   		  				console.log(Number(dataArr[key].pm2));
 					    	   		  				pm2valuesarr.push(Number(dataArr[key].pm2));	
 					    	   		  			    //timevaluesarr.push(dataArr[key].timestamp.split(" ")[1]);
-					    	   		  				timevaluesarr.push(dataArr[key].timestamp);
+					    	   		  				//var datepart = dataArr[key].timestamp.split(" ")[0];
+					    	   		  				//var timepart = dataArr[key].timestamp.split(" ")[1];
+					    	   		  				var date = new Date(dataArr[key].timestamp);
+					    	   		  				date.setMinutes(date.getMinutes() + 30);
+					    	   		  				date.setHours(date.getHours() + 5 );
+						    	   		  			//date.setMinutes(0);
+						    	   		  			//date.setSeconds(0);
+					    	   		  				timevaluesarr.push(date.toISOString()); // ISO string is utc time so please add offset to make it correct GMT time according to your zone..
 					    	   		  			}  
 					    	   		  	}
 					    	   		  	var delhipm2valuesarr = [];
-					    	   		    delhipm2valuesarr.push('data1')
+					    	   		    delhipm2valuesarr.push('data2')
 					    	   		  	var delhitimevaluesarr = [];
-					    	   		    delhitimevaluesarr.push('x1');
+					    	   		    delhitimevaluesarr.push('x2');
 					    	   		  	var apiResultsArr = apiResponse.results;
 					    	   		  	var count = 0;
 					    	   		  	for(var key in apiResultsArr) {
 					    	   		  					
-					    	   		  					if(apiResultsArr[key].value != -999  && count <= 10) {
+					    	   		  					if(apiResultsArr[key].value != -999  && count <= 15) {
 					    	   		  						 count++;
 					    	   		  						 delhipm2valuesarr.push(apiResultsArr[key].value);
-					    	   		  					     var date = new Date(apiResultsArr[key].date.local)
-					    	   		  						 delhitimevaluesarr.push(date);
+					    	   		  					     var date = new Date(apiResultsArr[key].date.local);
+						    	   		  					date.setMinutes(date.getMinutes() + 30);
+							    	   		  				date.setHours(date.getHours() + 5 );
+					    	   		  					     //date.setMinutes(0,0);
+					    	   		  						 delhitimevaluesarr.push(date.toISOString());
 					    	   		  					}     
 					    	   		  	}
-					    	   		  	
+					    	   		  
+					    	   		  	console.log('timevaluesarr',timevaluesarr);
+					    	   		  	console.log('delhitimevaluesarr',delhitimevaluesarr);
+					    	   		    console.log('pm2valuesarr',pm2valuesarr);
+					    	   	    	console.log('delhipm2valuesarr',delhipm2valuesarr);
+					    	   		 
 					    	   		  	
 					                  require(['c3', 'jquery'], function(c3, $) {
 					                  		
 					                	  var chart = c3.generate({
 					                  			bindto: '#chart-employment', // id of chart wrapper
 					                  			data: {
-					                		  		
-//					                		  		xs : {
-//					                		  					'data1' : 'x1',
-//					                		  					'data2' : 'x2'
-//					                	  			},
+					                			   xFormat: '%Y-%m-%dT%H:%M:%S.%LZ',
+					                		  		xs : {
+					                		  					'data1' : 'x1',
+					                		  					'data2' : 'x2'
+					                	  			},
+					                		  		//x: 'x',
+					                	  		
 					                	  			columns: [
 					                  				    // each columns data
-					                  				    //timevaluesarr,
-					                  				    delhitimevaluesarr,
-														//pm2valuesarr,
-														delhipm2valuesarr//,
+					                  				    timevaluesarr,
+					                  				     pm2valuesarr,
+														//,
 					                  					//['data3', 252, 358, 246, 277, 314]
 					                  					
 					                  					
@@ -934,25 +956,25 @@
 					                  				type: 'line', // default type of chart
 					                  				colors: {
 					                  					'data1': tabler.colors["green"],
-					                  					//'data2': tabler.colors["blue"]//,
+					                  					'data2': tabler.colors["blue"]//,
 					                  					//'data3': tabler.colors["orange"]
 					                  				},
 					                  				names: {
 					                  				    // name of each serie
 					                  					'data1': 'Central Park PM2.5 Value',
-					                  					//'data2': 'Delhi PM2.5 Value'//,
+					                  					'data2': 'Delhi PM2.5 Value'//,
 					                  					//'data3': 'Gurgaon  PM2.5 Value'
 					                  				}
 					                  			},
 					                  			axis: {
 					                  				x: {
 					                  					type : 'timeseries',
-					                  					localtime: true,
+					                  					//localtime: true,
 					                  					
 					                  					tick : {
 					                  		                rotate: 75,
 					                  		                //multiline: false
-					                  		             
+					                  		                format: '%Y-%m-%d %H:%M:%S' 
 					                  		            }
 					                  					// name of each category
 					                  					//categories: ['17/6/18', '18/6/18', '19/6/18', '20/6/18', '21/6/18' , '22/6/18']
@@ -967,8 +989,17 @@
 					                  				top: 0
 					                  			},
 					                  		});
-					                  	 
+					                	   setTimeout(function () {
+						                	    chart.load({
+						                	        columns: [
+						                	                  delhitimevaluesarr,
+						                	                  delhipm2valuesarr
+						                	        ]
+						                	    });
+						                	}, 1000);
 					                  });
+					                 
+
 					       }  
                 </script>
               </div>

@@ -213,5 +213,6 @@
                 </configuration>
             </plugin>
         </plugins>
+        <finalName>aqi</finalName>
     </build>
 </project>

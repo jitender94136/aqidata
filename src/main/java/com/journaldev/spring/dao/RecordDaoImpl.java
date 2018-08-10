@@ -6,13 +6,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.LinkedCaseInsensitiveMap;
 
 import com.journaldev.spring.modal.Record;
 
@@ -97,16 +102,48 @@ public class RecordDaoImpl implements RecordDao {
 		Connection con = null;
 		List<Record> records = new ArrayList<Record>();
 		try {
-			con = jdbcTemplate.getDataSource().getConnection();
+			//con = jdbcTemplate.getDataSource().getConnection();
+			//SimpleJdbcCall jdbcCall =  new SimpleJdbcCall(jdbcTemplate.getDataSource()).withProcedureName("fl_get_central_park_feed");
+			//SqlParameterSource in = new MapSqlParameterSource().addValue("in_id", 0);
+			//jdbcCall.execute(in);
+//			 Map<String,Object> returnData = jdbcTemplate.call(new CallableStatementCreator() {
+//				@Override
+//				public CallableStatement createCallableStatement(Connection con)
+//						throws SQLException {
+//					String sql = "call fl_get_central_park_feed()";
+//					CallableStatement cstmt = con.prepareCall(sql);
+//					return cstmt;
+//				}
+//			}, new ArrayList<SqlParameter>());
 			String sql = "call fl_get_central_park_feed()";
-			CallableStatement cstmt = con.prepareCall(sql);
-			ResultSet rs = cstmt.executeQuery();
-			while(rs.next()) {
-						Record record = new Record();
-						record.setPm2(rs.getString("avgpm2"));
-						record.setTimestamp(rs.getString("timestamp"));
-						records.add(record);
-			}
+			List<Record> record = jdbcTemplate.query(sql, new Object[] {},  new RowMapper<Record>() {
+						@Override
+						public Record mapRow(ResultSet rs, int rowNum)
+								throws SQLException {
+							Record record = new Record();
+							record.setPm2(rs.getString("avgpm2"));
+							record.setTimestamp(rs.getString("timestamp"));
+							return record;
+						}
+			
+			});
+			
+			System.out.println(record.size()); 
+			
+			
+			
+			
+			
+              
+			//String sql = "call fl_get_central_park_feed()";
+			//CallableStatement cstmt = con.prepareCall(sql);
+			//ResultSet rs = cstmt.executeQuery();
+//			while(rs.next()) {
+//						Record record = new Record();
+//						record.setPm2(rs.getString("avgpm2"));
+//						record.setTimestamp(rs.getString("timestamp"));
+//						records.add(record);
+//			}
 			
 			
 		} catch(Exception e) {

@@ -50,6 +50,7 @@ public class RecordController {
 	
 	@RequestMapping(value = "/getCurrentDayRecords", method = RequestMethod.GET)
 	public List<Record> getCurrentDayData(HttpServletRequest request) {
+		  System.out.println("System properties :- "+System.getProperties().toString());
 		  return recordService.getCurrentDayRecords();
 	}
 	
