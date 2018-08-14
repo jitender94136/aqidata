@@ -100,7 +100,7 @@ public class RecordDaoImpl implements RecordDao {
 	@Override
 	public List<Record> getCentralParkFeed() {
 		Connection con = null;
-		List<Record> records = new ArrayList<Record>();
+		List<Record> records = null;
 		try {
 			//con = jdbcTemplate.getDataSource().getConnection();
 			//SimpleJdbcCall jdbcCall =  new SimpleJdbcCall(jdbcTemplate.getDataSource()).withProcedureName("fl_get_central_park_feed");
@@ -116,7 +116,7 @@ public class RecordDaoImpl implements RecordDao {
 //				}
 //			}, new ArrayList<SqlParameter>());
 			String sql = "call fl_get_central_park_feed()";
-			List<Record> record = jdbcTemplate.query(sql, new Object[] {},  new RowMapper<Record>() {
+			records = jdbcTemplate.query(sql, new Object[] {},  new RowMapper<Record>() {
 						@Override
 						public Record mapRow(ResultSet rs, int rowNum)
 								throws SQLException {
@@ -128,7 +128,7 @@ public class RecordDaoImpl implements RecordDao {
 			
 			});
 			
-			System.out.println(record.size()); 
+			System.out.println(records.size()); 
 			
 			
 			

@@ -7,10 +7,10 @@
 	<!-- Root Context: defines shared resources visible to all other web components -->
 		
 
-	<beans profile="local" >	
+	<beans profile="dev" >	
 				<bean   id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 						<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-						<property name="url" value="jdbc:mysql://localhost:3306/test?useSSL=false" />
+						<property name="url" value="jdbc:mysql://localhost:3306/test?autoReconnect=true&amp;useSSL=false&amp;allowPublicKeyRetrieval=true" />
 						<property name="username" value="root" />
 						<property name="password" value="" />
 				</bean> 
@@ -19,7 +19,7 @@
 	<beans profile="prod">	
 				<bean   id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 						<property name="driverClassName" value="com.mysql.jdbc.Driver" />
-						<property name="url" value="jdbc:mysql://localhost:3306/test?useSSL=false" />
+						<property name="url" value="jdbc:mysql://localhost:3306/test?autoReconnect=true&amp;allowPublicKeyRetrieval=true&amp;useSSL=false" />
 						<property name="username" value="root" />
 						<property name="password" value="Prod@pass9" />
 				</bean> 
