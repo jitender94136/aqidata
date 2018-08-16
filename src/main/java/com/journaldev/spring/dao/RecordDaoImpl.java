@@ -122,6 +122,8 @@ public class RecordDaoImpl implements RecordDao {
 								throws SQLException {
 							Record record = new Record();
 							record.setPm2(rs.getString("avgpm2"));
+							record.setPm10(rs.getString("avgpm10"));
+							record.setTemp(rs.getString("avgtemp"));
 							record.setTimestamp(rs.getString("timestamp"));
 							return record;
 						}

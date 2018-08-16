@@ -1,11 +1,14 @@
 package com.journaldev.spring.delegate.api;
 
-import com.journaldev.spring.modal.gurgaon.GurgaonAirFeed;
+import com.journaldev.spring.modal.weather.CityWeatherData;
+
 
 public interface APIService {
 
 	
-				public int saveAPIDataGurgaon(GurgaonAirFeed response);
+				public void saveWeatherData(CityWeatherData cityWeatherData);
+
+				public String getCurrentWeatherData(int cityId);
 				
 				
 	

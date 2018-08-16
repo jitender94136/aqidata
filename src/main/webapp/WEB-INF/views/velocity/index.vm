@@ -90,9 +90,10 @@
         											drawCOTrendlines(finalData);
         											drawSO2Trendlines(finalData);
         											drawNOTrendlines(finalData);
-    											console.log(finalData);
-    											generatePM10Chart(finalData);
-    											generateTempChart(finalData);
+	    											//console.log(finalData);
+	    											//getTemperatureData(finalData);
+	    											//generatePM10Chart(finalData);
+	    											//generateTempChart(finalData);
     											
     								}
     							}); 
@@ -104,8 +105,10 @@
 				success : function(data) {
     				console.log('the response from ajax request....');
     				console.log(data);
-    				makeAjaxCall("https://api.openaq.org/v1/measurements?country=IN&city=Delhi&location=IGI Airport (T3), New Delhi - IMD&parameter[]=pm25&limit=5","GET",data).then(generatePM2Chart, errorHandler);
-				}
+    				makeAjaxCall("https://api.openaq.org/v1/measurements?country=IN&city=Delhi&location=IGI Airport (T3), New Delhi - IMD&parameter[]=pm25&limit=20","GET",data).then(generatePM2Chart, errorHandler);
+    				makeAjaxCall("https://api.openaq.org/v1/measurements?country=IN&city=Delhi&location=IGI Airport (T3), New Delhi - IMD&parameter[]=pm10&limit=20","GET",data).then(generatePM10Chart, errorHandler);
+    				getTemperatureData(data);
+    			}
     		});
     	});
   });
@@ -119,7 +122,9 @@
    
    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"  />
    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,500,500i,600,600i,700,700i&amp;subset=latin-ext"  />
-
+   <style  type="text/css">
+   			svg > g > g:last-child { pointer-events: none }
+   </style>
    
   </head>
   <body >
@@ -262,7 +267,7 @@
 				                 			<div id="chart_div_8" style="width:100%;height:80px;margin-bottom:0px;"> </div>
 				                 		   
 					                 		   </td>
-							                    <td width="21%"><span><strong>NO</span> <br/> $!record.no2 </strong><span>&micro;g/m<sup>3</sup></span></td>
+							                    <td width="21%"><span><strong>NO2</span> <br/> $!record.no2 </strong><span>&micro;g/m<sup>3</sup></span></td>
 								             </tr>			
 								             </table>     
 			                 
@@ -286,13 +291,14 @@
                  <div class="card-header">
                     <h3 class="card-title">PM2.5</h3>
 <table align="right" width="100%"> 
-                    
+                    <!--
                     <tr align="right">
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td bgcolor="green" class="legend" >Central Park	</td>
                     <td bgcolor="orange"  class="legend">Gurgaon	</td>
                     <td bgcolor="blue" class="legend" >Delhi	</td>
                     </tr>
+                    -->
                     </table>
                   </div><br>
 <!--for  filter-->
@@ -325,7 +331,7 @@
                         -->
                  <!--end filter-->
                   <div class="card-body">
-                    <div id="chart-employment" style="height: 16rem"></div>
+                    <div id="pm25chart" style="height: 16rem"></div>
                   </div>
                 </div>
        <script type="text/javascript">
@@ -885,122 +891,59 @@
       
        
         function generatePM2Chart(responseArr) {
-						        	    var apiResponse =  responseArr[0];
-						        	    var dataArr = responseArr[1];
-        								console.log('the value of data arr ',dataArr);
-					    	   		  	var pm2valuesarr = [];
-					    	   		    pm2valuesarr.push('data1')
-					    	   		  	var timevaluesarr = [];
-					    	   		    timevaluesarr.push('x1');
-					    	   		  	for(var key in dataArr) {
-					    	   		  			if(key < 5) {
-					    	   		  				console.log(Number(dataArr[key].pm2));
-					    	   		  				pm2valuesarr.push(Number(dataArr[key].pm2));	
-					    	   		  			    //timevaluesarr.push(dataArr[key].timestamp.split(" ")[1]);
-					    	   		  				//var datepart = dataArr[key].timestamp.split(" ")[0];
-					    	   		  				//var timepart = dataArr[key].timestamp.split(" ")[1];
-					    	   		  				//date.setMinutes(date.getMinutes() + 30);
-					    	   		  				//date.setHours(date.getHours() + 5 );
-						    	   		  			//date.setMinutes(0);
-						    	   		  			//date.setSeconds(0);
-					    	   		  				timevaluesarr.push(dataArr[key].timestamp); 
-					    	   		  			}  
-					    	   		  	}
-					    	   		  	var delhipm2valuesarr = [];
-					    	   		    delhipm2valuesarr.push('data2')
-					    	   		  	var delhitimevaluesarr = [];
-					    	   		    delhitimevaluesarr.push('x2');
-					    	   		  	var apiResultsArr = apiResponse.results;
-					    	   		  	var count = 0;
-					    	   		  	for(var key in apiResultsArr) {
-					    	   		  					if(apiResultsArr[key].value != -999  && count <= 5) {
-					    	   		  						 count++;
-					    	   		  						 delhipm2valuesarr.push(apiResultsArr[key].value);
-					    	   		  					     //var date = new Date(apiResultsArr[key].date.local);
-						    	   		  					 var dateString = apiResultsArr[key].date.local.replace("T"," ");
-						    	   		  					 dateString = dateString.substring(0,dateString.length-6);
-					    	   		  						 //date.setMinutes(date.getMinutes() + 30);
-							    	   		  				//date.setHours(date.getHours() + 5 );
-					    	   		  					     //date.setMinutes(0,0);
-					    	   		  						 delhitimevaluesarr.push(dateString);
-					    	   		  					}     
-					    	   		  	}
-					    	   		  
-					    	   		  	console.log('timevaluesarr',timevaluesarr);
-					    	   		  	console.log('delhitimevaluesarr',delhitimevaluesarr);
-					    	   		    console.log('pm2valuesarr',pm2valuesarr);
-					    	   	    	console.log('delhipm2valuesarr',delhipm2valuesarr);
-					    	   		 
-					    	   		  	
-					                  require(['c3', 'jquery'], function(c3, $) {
-					                  		
-					                	  var chart = c3.generate({
-					                  			bindto: '#chart-employment', // id of chart wrapper
-					                  			data: {
-					                			   //xFormat: '%Y-%m-%dT%H:%M:%S.%LZ',
-					                		  		
-					                		  		xs : {
-					                		  					'data1' : 'x1',
-					                		  					'data2' : 'x2'
-					                	  			},
-					                		  		//x: 'x',
-					                	  		
-					                	  			columns: [
-					                  				    // each columns data
-					                  				     timevaluesarr,
-					                  				     delhitimevaluesarr,
-					                  				     pm2valuesarr,
-					                  				     delhipm2valuesarr
-														//,
-					                  					//['data3', 252, 358, 246, 277, 314]
-					                  					
-					                  					
-					                  				],
-//					                  				//type: 'line', // default type of chart
-//					                  				colors: {
-//					                  					'data1': tabler.colors["green"],
-//					                  					'data2': tabler.colors["blue"]//,
-//					                  					//'data3': tabler.colors["orange"]
-//					                  				},
-//					                  				names: {
-//					                  				    // name of each serie
-//					                  					'data1': 'Central Park PM2.5 Value',
-//					                  					'data2': 'Delhi PM2.5 Value'//,
-//					                  					//'data3': 'Gurgaon  PM2.5 Value'
-//					                  				}
-//					                  			},
-					                  			axis: {
-					                  				x: {
-					                	  				
-					                  					type : 'timeseries',
-					                  					//localtime: true,
-					                  					
-					                  					tick : {
-					                  		        //        rotate: 75,
-					                  		                //multiline: false
-					                  		                format: '%Y-%m-%d %H:%M:%S',
-					                  		                values: delhitimevaluesarr 
-					                  		           },
-					                  					// name of each category
-					                  					//categories: ['17/6/18', '18/6/18', '19/6/18', '20/6/18', '21/6/18' , '22/6/18']
-					                  					//categories: delhitimevaluesarr
-					                  				}
-					                  				
-					                  			},
-//					                  			legend: {
-//					                                  show: false, //hide legend
-//					                  			},
-//					                  			padding: {
-//					                  				bottom: 0,
-//					                  				top: 0
-//					                  			},
-					                	       }
-					                  		});
-					                	  
-					                  });
-					                 
-
-					       }  
+					        	    var apiResponse =  responseArr[0];
+					        	    var dataArr = responseArr[1];
+    								console.log('the value of data arr ',dataArr);
+				    	   		  	var centralParkDataTable = [];
+				    	   		    for(var key in dataArr) {
+				    	   		  			if(key < 10) {
+				    	   		  				var centralParkArr = [];
+				    	   		  				var dateString = dataArr[key].timestamp.replace(" ","T");
+				    	   		  				console.log(dateString);
+				    	   		  				var date = new Date(dateString);
+				    	   		  				centralParkArr.push(date);
+				    	   		  			    centralParkArr.push(Number(dataArr[key].pm2));
+				    	   		  			    centralParkDataTable.push(centralParkArr);
+				    	   		  			}  
+				    	   		  	}
+				    	   		    console.log(centralParkDataTable);
+				    	   		    var apiResultsArr = apiResponse.results;
+				    	   		  	var count = 0;
+				    	   		  	var dataTableDelhi = [];
+				    	   		  	for(var key in apiResultsArr) {
+				    	   		  					if(apiResultsArr[key].value != -999  && count < 10) {
+				    	   		  						 count++;
+				    	   		  						 var delhiDataArr = [];
+				    	   		  						 //var dateString = apiResultsArr[key].date.local.replace("T"," ");
+					    	   		  					 //dateString = dateString.substring(0,dateString.length-6);
+				    	   		  						 var dateString = apiResultsArr[key].date.local;
+				    	   		  						 dateString = dateString.substring(0,dateString.length-6);
+				    	   		  						  
+				    	   		  						 console.log(dateString);
+				    	   		  						 var date = new Date(dateString);
+				    	   		  						 delhiDataArr.push(date);
+				    	   		  						 delhiDataArr.push(Number(apiResultsArr[key].value));
+				    	   		  						 dataTableDelhi.push(delhiDataArr);
+				    	   		  					}     
+				    	   		  	}
+					    	   		console.log(dataTableDelhi);	
+					    	   	    var data1 = new google.visualization.DataTable();
+					    	   	    data1.addColumn('datetime', 'X');
+					    	   	    data1.addColumn('number', 'Central Park PM2.5');
+					    	   	    data1.addRows(centralParkDataTable);
+					    	   	    var data2 = new google.visualization.DataTable();
+					    	   	    data2.addColumn('datetime', 'X');
+					    	   	    data2.addColumn('number', 'Delhi PM2.5');
+					    	   	    data2.addRows(dataTableDelhi);
+					    	   	    var joinedData = google.visualization.data.join(data1, data2, 'full', [[0, 0]], [1], [1]);
+					    	   	    console.log('After joining data....');
+					    	   	    console.log(joinedData);
+					    	   	    var chart = new google.visualization.LineChart(document.querySelector('#pm25chart'));
+					    	   	    chart.draw(joinedData, {
+					    	   	        interpolateNulls: true,
+					    	   	        legend : 'top'
+					    	   	    });
+					    	 }  
                 </script>
               </div>
               <!--end ist-->
@@ -1010,13 +953,14 @@
                   <div class="card-header">
                     <h3 class="card-title">PM10</h3>
 <table align="right" width="100%"> 
-                    
+				<!--
                     <tr align="right">
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td bgcolor="green" class="legend" >Central Park	</td>
                     <td bgcolor="orange"  class="legend">Gurgaon	</td>
                     <td bgcolor="blue" class="legend" >Delhi	</td>
                     </tr>
+                    -->
                     </table>
                   </div><br>
 
@@ -1050,66 +994,66 @@
                         -->
                  <!--end filter-->
                   <div class="card-body">
-                    <div id="chart-employment2" style="height: 16rem"></div>
+                    <div id="pm10chart" style="height: 16rem"></div>
                   </div>
                 </div>
-                <script>
-                
-                function generatePM10Chart(dataArr) {
-                	var pm10valuesarr = [];
-    	   		    pm10valuesarr.push('data1')
-    	   		  	var timevaluesarr = [];
-    	   		  	for(var key in dataArr) {
-    	   		  			if(key < 5 ) {	
-    	   		  				pm10valuesarr.push(Number(dataArr[key].pm10));	
-    	   		  			    timevaluesarr.push(dataArr[key].timestamp.split(" ")[1]);
-    	   		  			}  
-    	   		  	}
-                  require(['c3', 'jquery'], function(c3, $) {
-                  	
-                  		var chart = c3.generate({
-                  			bindto: '#chart-employment2', // id of chart wrapper
-                  			data: {
-                  				columns: [
-                  				    // each columns data
-									pm10valuesarr,
-									['data2', 345, 245, 445, 345, 349],
-                  					['data3', 223,242, 196, 156, 167]
-                  					
-                  					
-                  				],
-                  				type: 'line', // default type of chart
-                  				colors: {
-                  					'data1': tabler.colors["green"],
-                  					'data2': tabler.colors["blue"],
-                  					'data3': tabler.colors["orange"]
-                  				},
-                  				names: {
-                  				    // name of each serie
-                  					'data1': 'Central Park PM10 Value',
-                  					'data2': 'Delhi PM10 Value',
-                  					'data3': 'Gurgaon  PM10 Value'
-                  				}
-                  			},
-                  			axis: {
-                  				x: {
-                  					type: 'category',
-                  					// name of each category
-                  					//categories: ['17/6/18', '18/6/18', '19/6/18', '20/6/18', '21/6/18' , '22/6/18']
-                  					categories:timevaluesarr
-                  				},
-                  			},
-                  			legend: {
-                                  show: false, //hide legend
-                  			},
-                  			padding: {
-                  				bottom: 0,
-                  				top: 0
-                  			},
-                  		});
-                  	
-                  });
-                }
+                <script type="text/javascript">
+		                
+		                function generatePM10Chart(responseArr) {
+		                	var apiResponse =  responseArr[0];
+			        	    var dataArr = responseArr[1];
+							console.log('the value of data arr ',dataArr);
+		    	   		  	var centralParkDataTable = [];
+		    	   		    for(var key in dataArr) {
+		    	   		  			if(key < 10) {
+		    	   		  				var centralParkArr = [];
+		    	   		  				var dateString = dataArr[key].timestamp.replace(" ","T");
+		    	   		  				console.log(dateString);
+		    	   		  				var date = new Date(dateString);
+		    	   		  				centralParkArr.push(date);
+		    	   		  			    centralParkArr.push(Number(dataArr[key].pm10));
+		    	   		  			    centralParkDataTable.push(centralParkArr);
+		    	   		  			}  
+		    	   		  	}
+		    	   		    console.log(centralParkDataTable);
+		    	   		    var apiResultsArr = apiResponse.results;
+		    	   		  	var count = 0;
+		    	   		  	var dataTableDelhi = [];
+		    	   		  	for(var key in apiResultsArr) {
+		    	   		  					if(apiResultsArr[key].value != -999  && count < 10) {
+		    	   		  						 count++;
+		    	   		  						 var delhiDataArr = [];
+		    	   		  						 //var dateString = apiResultsArr[key].date.local.replace("T"," ");
+			    	   		  					 //dateString = dateString.substring(0,dateString.length-6);
+		    	   		  						 var dateString = apiResultsArr[key].date.local;
+		    	   		  						 dateString = dateString.substring(0,dateString.length-6);
+		    	   		  						  
+		    	   		  						 console.log(dateString);
+		    	   		  						 var date = new Date(dateString);
+		    	   		  						 delhiDataArr.push(date);
+		    	   		  						 delhiDataArr.push(Number(apiResultsArr[key].value));
+		    	   		  						 dataTableDelhi.push(delhiDataArr);
+		    	   		  					}     
+		    	   		  	}
+			    	   		console.log(dataTableDelhi);	
+			    	   	    var data1 = new google.visualization.DataTable();
+			    	   	    data1.addColumn('datetime', 'X');
+			    	   	    data1.addColumn('number', 'Central Park PM10');
+			    	   	    data1.addRows(centralParkDataTable);
+			    	   	    var data2 = new google.visualization.DataTable();
+			    	   	    data2.addColumn('datetime', 'X');
+			    	   	    data2.addColumn('number', 'Delhi PM10');
+			    	   	    data2.addRows(dataTableDelhi);
+			    	   	    var joinedData = google.visualization.data.join(data1, data2, 'full', [[0, 0]], [1], [1]);
+			    	   	    console.log('After joining data....');
+			    	   	    console.log(joinedData);
+			    	   	    var chart = new google.visualization.LineChart(document.querySelector('#pm10chart'));
+			    	   	    chart.draw(joinedData, {
+			    	   	        interpolateNulls: true,
+			    	   	        legend : 'top'
+			    	   	    });
+		                  
+		                }
                 </script>
               </div>
               <!--end ist-->
@@ -1119,13 +1063,14 @@
                   <div class="card-header">
                     <h3 class="card-title">Temp.</h3>
 <table align="right" width="100%"> 
-                    
+<!--
                     <tr align="right">
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td bgcolor="green" class="legend" >Central Park	</td>
                     <td bgcolor="orange"  class="legend">Gurgaon	</td>
                     <td bgcolor="blue" class="legend" >Delhi	</td>
                     </tr>
+      -->                    
                     </table>
                   </div><br>
 <!--for  filter-->
@@ -1160,63 +1105,107 @@
                         -->
                  <!--end filter-->
                   <div class="card-body">
-                    <div id="chart-employment1" style="height: 16rem"></div>
+                    <div id="tempchart" style="height: 16rem"></div>
                   </div>
                 </div>
-                <script>
-			                function generateTempChart(dataArr) {
-			                  require(['c3', 'jquery'], function(c3, $) {
-			                	    var tempvaluesarr = [];
-			                	    tempvaluesarr.push('data1')
-				      	   		  	var timevaluesarr = [];
-				      	   		  	for(var key in dataArr) {
-				      	   		  			if(key < 5 ) {	
-				      	   		  				tempvaluesarr.push(Number(dataArr[key].temp));	
-				      	   		  			    timevaluesarr.push(dataArr[key].timestamp.split(" ")[1]);
-				      	   		  			}   
-				      	   		  	}
-			                  		var chart = c3.generate({
-			                  			bindto: '#chart-employment1', // id of chart wrapper
-			                  			data: {
-			                  				columns: [
-			                  				    // each columns data
-												tempvaluesarr,
-												['data2', 45, 43, 44, 46, 43],
-			                  					['data3', 45, 44,43, 45, 42]
-			                  					
-			                  					
-			                  				],
-			                  				type: 'line', // default type of chart
-			                  				colors: {
-			                  					'data1': tabler.colors["green"],
-			                  					'data2': tabler.colors["blue"],
-			                  					'data3': tabler.colors["orange"]
-			                  				},
-			                  				names: {
-			                  				    // name of each serie
-			                  					'data1': 'Central Park Temp Value',
-			                  					'data2': 'Delhi PM2.5 Temp Value',
-			                  					'data3': 'Gurgaon  Temp Value'
-			                  				}
-			                  			},
-			                  			axis: {
-			                  				x: {
-			                  					type: 'category',
-			                  					// name of each category
-			                  					categories: timevaluesarr
-			                  				},
-			                  			},
-			                  			legend: {
-			                                  show: false, //hide legend
-			                  			},
-			                  			padding: {
-			                  				bottom: 0,
-			                  				top: 0
-			                  			},
-			                  		});
-			                  	
-			                  });
-			                }
+                <script type="text/javascript">
+	                
+                	function getTemperatureData(centralParkData) {
+                	        var promiseObj = new Promise(function(resolve, reject) {
+                	        	//var gurgaonAPIUrl = "http://dataservice.accuweather.com/currentconditions/v1/188408/historical/24?apikey=lKnDGJHiJgAOesDpm2FnHJQbsCHyejAD";
+                	        	var gurgaonAPIUrl = "getWeatherData/188408";
+                	        	$.ajax({
+                	        			type : 'GET',
+                	        			url : gurgaonAPIUrl,
+                	        			success : function(gurgaonTempData) {
+                	        						console.log('the value of temp data for Gurgaon ', gurgaonTempData);
+                	        						resolve(gurgaonTempData);
+                	        			}
+                	        	});
+                			}).then(function(gurgaonTempData) {
+                				return new Promise(function(resolve,reject) {
+                					        //var delhiAPIUrl = "http://dataservice.accuweather.com/currentconditions/v1/202396/historical/24?apikey=lKnDGJHiJgAOesDpm2FnHJQbsCHyejAD";
+                							var delhiAPIUrl = "getWeatherData/202396";
+                							$.ajax({
+		                	        			type : 'GET',
+		                	        			url : delhiAPIUrl,
+		                	        			success : function(delhiTempData) {
+		                    								console.log('the value of temp data for Delhi ', delhiTempData);
+		                	        						resolve([JSON.parse(gurgaonTempData), JSON.parse(delhiTempData)]);
+		                	        			}
+		                	        	    });
+                				});
+                			}).then(function(apiDataArr) {
+                					 console.log('the value of apiDataArr',apiDataArr);
+                				     generateTempChart(apiDataArr,centralParkData);
+                			}).catch(function(error) {
+                						console.log('Error found in promise chain....');
+                						console.log(error);
+                			});
+                	}
+                	
+                	function generateTempChart(apiDataArr,centralParkData) {
+                		var gurgaonTempData =  apiDataArr[0];
+		        	    var delhiTempData = apiDataArr[1];
+						var centralParkDataTable = [];
+	    	   		    for(var key in centralParkData) {
+	    	   		  			if(key < 10) {
+	    	   		  				var centralParkArr = [];
+	    	   		  				var dateString = centralParkData[key].timestamp.replace(" ","T");
+	    	   		  				var date = new Date(dateString);
+	    	   		  				centralParkArr.push(date);
+	    	   		  			    centralParkArr.push(Number(centralParkData[key].temp));
+	    	   		  			    centralParkDataTable.push(centralParkArr);
+	    	   		  			}  
+	    	   		  	}
+	    	   		    console.log('chart data table for central park ',centralParkDataTable);
+	    	   		    var dataTableGurgaon = createDataTable(gurgaonTempData);
+	    	   		    console.log('data table Gurgaon',dataTableGurgaon);
+	    	   		    var dataTableDelhi = createDataTable(delhiTempData);
+	    	   		    console.log('data table Delhi',dataTableDelhi);
+	    	   		  	var data1 = new google.visualization.DataTable();
+		    	   	    data1.addColumn('datetime', 'X');
+		    	   	    data1.addColumn('number', 'Central Park Temp.');
+		    	   	    data1.addRows(centralParkDataTable);
+		    	   	    var data2 = new google.visualization.DataTable();
+		    	   	    data2.addColumn('datetime', 'X');
+		    	   	    data2.addColumn('number', 'Delhi Temp.');
+		    	   	    data2.addRows(dataTableDelhi);
+		    	   	    var data3 = new google.visualization.DataTable();
+		    	   	    data3.addColumn('datetime', 'X');
+		    	   	    data3.addColumn('number', 'Gurgaon Temp.');
+		    	   	    data3.addRows(dataTableGurgaon);
+		    	   	    var joinedData = google.visualization.data.join(data1, data2, 'full', [[0, 0]], [1], [1]);
+		    	   	    console.log('After first joining data....');
+		    	   	    console.log(joinedData);
+		    	   	    var joinedData2 = google.visualization.data.join(joinedData, data3, 'full', [[0, 0]], [1,2], [1]);
+		    	        console.log('After second joining data....');
+		    	   	    console.log(joinedData2);
+		    	   	    var chart = new google.visualization.LineChart(document.querySelector('#tempchart'));
+		    	   	    chart.draw(joinedData2, {
+		    	   	        interpolateNulls: true,
+		    	   	        legend : 'top'
+		    	   	    });
+	               }
+                	
+                   function createDataTable(tempDataArray) {
+	                		var dataTable = [];
+	                		console.log('in create data table method...',tempDataArray);
+	                		for(var key in tempDataArray) {
+                					if(key < 10) {
+	                					//console.log('key in tempDataArray',key,tempDataArray[key].Temperature.Metric.Value);
+				  						var tempRow = [];
+				  						var tempData = tempDataArray[key].Temperature.Metric.Value;
+				  						var timeData = tempDataArray[key].LocalObservationDateTime;
+				  						var date = new Date(timeData);
+				  						tempRow.push(date);
+				  						tempRow.push(tempData);
+				  						dataTable.push(tempRow);
+                					}
+			  				}
+                			return dataTable;
+                  }
+                	
                 </script>
               </div>
               <!--end iind-->
