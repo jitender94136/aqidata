@@ -212,7 +212,7 @@
 							                    <td width="78%">
 							                    		<div id="chart_div_1" style="width:100%;height:80px;margin-bottom:0px;"> </div> 
 							                    </td>
-							                    <td width="21%"><span><strong>PM2.5 AQI</span> <br/>$!record.pm2</strong> <span>&micro;g/m<sup>3</sup></span></td>
+							                    <td width="21%"><span><strong>PM2.5</span> <br/>$!record.pm2</strong> <span>&micro;g/m<sup>3</sup></span></td>
 					                    </tr>
 			                    </table>
 			                    
@@ -221,7 +221,7 @@
 						                            <td width="78%">
 								                    		<div id="chart_div_2" style="width:100%;height:80px;margin-bottom:0px;"> </div>
 								                    </td>
-								                    <td width="21%"><span><strong>PM10 AQI</span> <br/>$!record.pm10 </strong> <span>&micro;g/m<sup>3</sup></span></td>
+								                    <td width="21%"><span><strong>PM10</span> <br/>$!record.pm10 </strong> <span>&micro;g/m<sup>3</sup></span></td>
 						             </tr>
 				                 </table>
 				                 <table width="100%" class="currenttable"> 
@@ -289,17 +289,17 @@
               <div class="col-lg-6 col-xl-4">
                 <div class="card">
                  <div class="card-header">
-                    <h3 class="card-title">PM2.5</h3>
-<table align="right" width="100%"> 
+                    <h3 class="card-title">PM2.5 (&#181;g/m3) </h3>
                     <!--
+                    <table align="right" width="100%"> 
                     <tr align="right">
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td bgcolor="green" class="legend" >Central Park	</td>
                     <td bgcolor="orange"  class="legend">Gurgaon	</td>
                     <td bgcolor="blue" class="legend" >Delhi	</td>
                     </tr>
-                    -->
                     </table>
+                    -->
                   </div><br>
 <!--for  filter-->
 <!--
@@ -951,17 +951,19 @@
               <div class="col-lg-6 col-xl-4">
                 <div class="card">
                   <div class="card-header">
-                    <h3 class="card-title">PM10</h3>
-<table align="right" width="100%"> 
-				<!--
+                    <h3 class="card-title">PM10 (&#181;g/m3)</h3>
+<!--
+                    <table align="right" width="100%"> 
+				
                     <tr align="right">
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td bgcolor="green" class="legend" >Central Park	</td>
                     <td bgcolor="orange"  class="legend">Gurgaon	</td>
                     <td bgcolor="blue" class="legend" >Delhi	</td>
                     </tr>
-                    -->
+                    
                     </table>
+-->
                   </div><br>
 
                   <!--for  filter-->
@@ -1061,17 +1063,17 @@
               <div class="col-lg-6 col-xl-4">
                 <div class="card">
                   <div class="card-header">
-                    <h3 class="card-title">Temp.</h3>
-<table align="right" width="100%"> 
+                    <h3 class="card-title">Temp. (&#176;C)</h3>
 <!--
+					<table align="right" width="100%"> 
                     <tr align="right">
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td bgcolor="green" class="legend" >Central Park	</td>
                     <td bgcolor="orange"  class="legend">Gurgaon	</td>
                     <td bgcolor="blue" class="legend" >Delhi	</td>
                     </tr>
-      -->                    
                     </table>
+ -->                   
                   </div><br>
 <!--for  filter-->
 <!--
