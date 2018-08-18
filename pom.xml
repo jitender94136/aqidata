@@ -166,6 +166,12 @@
 	
 	   <!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
 		
+		<dependency>
+		    <groupId>com.github.thanglequoc</groupId>
+		    <artifactId>aqi-calculator</artifactId>
+		    <version>1.2.3</version>
+		</dependency>
+		
       
 	
 		<!-- Test -->

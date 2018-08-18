@@ -18,6 +18,7 @@
           baseUrl: '/'
       });
     </script>
+    <script type="text/javascript" src="resources/js/usaqicalculator.js" ></script>
     <!-- Dashboard Core -->
     <link href="/assets/css/dashboard.css" rel="stylesheet" />
     <script src="/assets/js/dashboard.js"></script>
@@ -90,6 +91,7 @@
         											drawCOTrendlines(finalData);
         											drawSO2Trendlines(finalData);
         											drawNOTrendlines(finalData);
+        											getCPCBSiteData("$!gurgaonCPCBSiteId");
 	    											//console.log(finalData);
 	    											//getTemperatureData(finalData);
 	    											//generatePM10Chart(finalData);
@@ -377,12 +379,27 @@
 		  		}
 		  		return format;
 	    }
+		
+		function getCPCBSiteData(siteId) {
+			$.ajax({
+				  type : 'POST',
+				  //url : 'https://app.cpcbccr.com/caaqms/caaqms_view_data',
+				  url : 'getCPCBSiteData/'+siteId,
+				  success : function(data) {
+					  			console.log('JSON data output of Gurgaon....');
+					  			console.log(data);
+				  }					  
+			});	
+			
+		} 
        
        function drawPM2Trendlines(dataArr) {
     	      var my_div = document.getElementById('chart_div_1') ;
 		      var data = new google.visualization.DataTable();
 		      data.addColumn('timeofday', 'Time');
 		      data.addColumn('number', 'PM2.5');
+//		      data.addColumn({type:'string', role:'annotation'});
+		      data.addColumn({type:'string', role:'style'});
 		      var finalDataArr = [];
 		      for(var key in dataArr) {
 		    	  if(key < 10) {
@@ -392,17 +409,23 @@
 		    	  		timeArr[1] = Number(timeArr[1].replace(/^0+/, ''));
 		    	  		timeArr[2] = Number(timeArr[2].replace(/^0+/, ''));
 		    	  		rowArr.push({v:timeArr , f:  dataArr[key].timestamp.split(" ")[1].split(":")[0] +":"+ dataArr[key].timestamp.split(" ")[1].split(":")[1] });
-		    	  		rowArr.push(Number(dataArr[key].pm2));	
+		    	  		rowArr.push(Number(dataArr[key].pm2));
+		    	  		var AQIndex = AQIPM25(Number(dataArr[key].pm2));
+		    	  		var aqCat = AQICategory(AQIndex);
+		    	  		var colorCode = getAQIColor(aqCat);
+		    	  		rowArr.push(colorCode);
 		    	  		finalDataArr.push(rowArr);
 		    	  }	
 		  	 }
 		      data.addRows(finalDataArr);
-		      var view = new google.visualization.DataView(data);
-		      view.setColumns([0, 1,
-		                       { calc: "stringify",
-		                         sourceColumn: 1,
-		                         type: "string",
-		                         role: "annotation" }]);
+//		      var view = new google.visualization.DataView(data);
+//		      view.setColumns([0, 1,
+//		                       { calc: "stringify",
+//		                         sourceColumn: 1,
+//		                         type: "string",
+//		                         role: "annotation" },
+//		                       { type: "string",
+//		                         role: "style" }]);
 
 		      var options = {
 		        hAxis: {
@@ -452,6 +475,7 @@
 		      var data = new google.visualization.DataTable();
 		      data.addColumn('timeofday', 'Time');
 		      data.addColumn('number', 'PM10');
+		      data.addColumn({type:'string', role:'style'});
 		      var finalDataArr = [];
 		      for(var key in dataArr) {
 		    	  	if(key < 10) {	
@@ -462,6 +486,10 @@
 		    	  		timeArr[2] = Number(timeArr[2].replace(/^0+/, ''));
 		    	  		rowArr.push({v:timeArr , f:  dataArr[key].timestamp.split(" ")[1].split(":")[0] +":"+ dataArr[key].timestamp.split(" ")[1].split(":")[1] });
 		    	  		rowArr.push(Number(dataArr[key].pm10));	
+		    	  		var AQIndex = AQIPM10(Number(dataArr[key].pm10));
+		    	  		var aqCat = AQICategory(AQIndex);
+		    	  		var colorCode = getAQIColor(aqCat);
+		    	  		rowArr.push(colorCode);
 		    	  		finalDataArr.push(rowArr);
 		    	  	}	
 		  	 }
@@ -640,7 +668,8 @@
        function drawo3Trendlines(dataArr) {
 		      var data = new google.visualization.DataTable();
 		      data.addColumn('timeofday', 'Time');
-		      data.addColumn('number', 'Humidity');
+		      data.addColumn('number', '03');
+		      data.addColumn({type:'string', role:'style'});
 		      var finalDataArr = [];
 		      for(var key in dataArr) {
 		    	  if(key < 10) {
@@ -650,17 +679,21 @@
 		    	  		timeArr[1] = Number(timeArr[1].replace(/^0+/, ''));
 		    	  		timeArr[2] = Number(timeArr[2].replace(/^0+/, ''));
 		    	  		rowArr.push({v:timeArr , f:  dataArr[key].timestamp.split(" ")[1].split(":")[0] +":"+ dataArr[key].timestamp.split(" ")[1].split(":")[1] });
-		    	  		rowArr.push(Number(dataArr[key].o3));	
+		    	  		rowArr.push(Number(dataArr[key].o3));
+		    	  		var AQIndex = AQIOzone1hr(Number(dataArr[key].o3));
+		    	  		var aqCat = AQICategory(AQIndex);
+		    	  		var colorCode = getAQIColor(aqCat);
+		    	  		rowArr.push(colorCode);
 		    	  		finalDataArr.push(rowArr);
 		    	  }	
 		  	 }
 		      data.addRows(finalDataArr);
-		      var view = new google.visualization.DataView(data);
-		      view.setColumns([0, 1,
-		                       { calc: "stringify",
-		                         sourceColumn: 1,
-		                         type: "string",
-		                         role: "annotation" }]);
+//		      var view = new google.visualization.DataView(data);
+//		      view.setColumns([0, 1,
+//		                       { calc: "stringify",
+//		                         sourceColumn: 1,
+//		                         type: "string",
+//		                         role: "annotation" }]);
 		      var options = {
 		    	hAxis: {
 		    	  format : 'h:mm'
@@ -703,6 +736,8 @@
 		      var data = new google.visualization.DataTable();
 		      data.addColumn('timeofday', 'Time');
 		      data.addColumn('number', 'CO');
+		      data.addColumn({type : 'string', role : 'style' });
+		      
 		      var finalDataArr = [];
 		      for(var key in dataArr) {
 		    	  if(key < 10) {
@@ -712,17 +747,21 @@
 		    	  		timeArr[1] = Number(timeArr[1].replace(/^0+/, ''));
 		    	  		timeArr[2] = Number(timeArr[2].replace(/^0+/, ''));
 		    	  		rowArr.push({v:timeArr , f:  dataArr[key].timestamp.split(" ")[1].split(":")[0] +":"+ dataArr[key].timestamp.split(" ")[1].split(":")[1] });
-		    	  		rowArr.push(Number(dataArr[key].co));	
+		    	  		rowArr.push(Number(dataArr[key].co));
+		    	  		var AQIndex = AQICO(Number(dataArr[key].co));
+		    	  		var aqCat = AQICategory(AQIndex);
+		    	  		var colorCode = getAQIColor(aqCat);
+		    	  		rowArr.push(colorCode);
 		    	  		finalDataArr.push(rowArr);
 		    	  }	
 		  	 }
 		      data.addRows(finalDataArr);
-		      var view = new google.visualization.DataView(data);
-		      view.setColumns([0, 1,
-		                       { calc: "stringify",
-		                         sourceColumn: 1,
-		                         type: "string",
-		                         role: "annotation" }]);
+//		      var view = new google.visualization.DataView(data);
+//		      view.setColumns([0, 1,
+//		                       { calc: "stringify",
+//		                         sourceColumn: 1,
+//		                         type: "string",
+//		                         role: "annotation" }]);
 		      var options = {
 		    	hAxis: {
 		    	  format : 'h:mm'
@@ -765,6 +804,7 @@
 		      var data = new google.visualization.DataTable();
 		      data.addColumn('timeofday', 'Time');
 		      data.addColumn('number', 'SO2');
+		      data.addColumn({type : 'string', role : 'style' });
 		      var finalDataArr = [];
 		      for(var key in dataArr) {
 		    	  if(key < 10) {
@@ -775,16 +815,20 @@
 		    	  		timeArr[2] = Number(timeArr[2].replace(/^0+/, ''));
 		    	  		rowArr.push({v:timeArr , f:  dataArr[key].timestamp.split(" ")[1].split(":")[0] +":"+ dataArr[key].timestamp.split(" ")[1].split(":")[1] });
 		    	  		rowArr.push(Number(dataArr[key].so2));	
+		    	  		var AQIndex = AQISO21hr(Number(dataArr[key].so2));
+		    	  		var aqCat = AQICategory(AQIndex);
+		    	  		var colorCode = getAQIColor(aqCat);
+		    	  		rowArr.push(colorCode);
 		    	  		finalDataArr.push(rowArr);
 		    	  }	
 		  	 }
 		      data.addRows(finalDataArr);
-		      var view = new google.visualization.DataView(data);
-		      view.setColumns([0, 1,
-		                       { calc: "stringify",
-		                         sourceColumn: 1,
-		                         type: "string",
-		                         role: "annotation" }]);
+//		      var view = new google.visualization.DataView(data);
+//		      view.setColumns([0, 1,
+//		                       { calc: "stringify",
+//		                         sourceColumn: 1,
+//		                         type: "string",
+//		                         role: "annotation" }]);
 		      var options = {
 		    	hAxis: {
 		    	  format : 'h:mm'
@@ -828,6 +872,7 @@
 		      var data = new google.visualization.DataTable();
 		      data.addColumn('timeofday', 'Time');
 		      data.addColumn('number', 'NO');
+		      data.addColumn({type : 'string', role : 'style' });
 		      var finalDataArr = [];
 		      for(var key in dataArr) {
 		    	  if(key < 10) {
@@ -838,16 +883,20 @@
 		    	  		timeArr[2] = Number(timeArr[2].replace(/^0+/, ''));
 		    	  		rowArr.push({v:timeArr , f:  dataArr[key].timestamp.split(" ")[1].split(":")[0] +":"+ dataArr[key].timestamp.split(" ")[1].split(":")[1] });
 		    	  		rowArr.push(Number(dataArr[key].no2));	
+		    	  		var AQIndex = AQINO2(Number(dataArr[key].no2));
+		    	  		var aqCat = AQICategory(AQIndex);
+		    	  		var colorCode = getAQIColor(aqCat);
+		    	  		rowArr.push(colorCode);
 		    	  		finalDataArr.push(rowArr);
 		    	  }	
 		  	 }
 		      data.addRows(finalDataArr);
-		      var view = new google.visualization.DataView(data);
-		      view.setColumns([0, 1,
-		                       { calc: "stringify",
-		                         sourceColumn: 1,
-		                         type: "string",
-		                         role: "annotation" }]);
+//		      var view = new google.visualization.DataView(data);
+//		      view.setColumns([0, 1,
+//		                       { calc: "stringify",
+//		                         sourceColumn: 1,
+//		                         type: "string",
+//		                         role: "annotation" }]);
 		      var options = {
 		    	hAxis: {
 		    	  format : 'h:mm'
